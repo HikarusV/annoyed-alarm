@@ -7,14 +7,25 @@
 
 
 import ActivityKit
-import SwiftUI
+internal import SwiftUI
 
 class AlarmLiveActivityManager {
     static let shared = AlarmLiveActivityManager()
     
-    private var activity: Activity<AlarmAttributes>?
+    private var activity: Activity<AlarmAttributesData>?
+    
+    func endAllActivities() async {
+            for activity in Activity<AlarmAttributesData>.activities {
+                await activity.end(
+                    ActivityContent(state: activity.content.state, staleDate: nil),
+                    dismissalPolicy: .immediate
+                )
+                
+                print("Activity ended \(activity.id)")
+            }
+        }
 
-    func start(alarm: Alarm) {
+    func start(alarm: AlarmData) {
         // ❗️ cek support device
         print("Cek activity support")
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
@@ -24,16 +35,31 @@ class AlarmLiveActivityManager {
         print("✅ Live Activities enabled")
 
         // 🔹 Attributes (static)
-        let attributes = AlarmAttributes(alarmName: alarm.label)
+        let attributes = AlarmAttributesData(alarmName: alarm.label)
         
         // 🔹 ContentState (dynamic, ditampilkan di widget / island)
-        let state = AlarmAttributes.ContentState(
+        let state = AlarmAttributesData.ContentState(
             isRinging: true,
             label: alarm.label,      // tampil di Dynamic Island
-            countdown: nil           // optional, bisa diisi untuk timer
+            countdown: 60,
+            challengeDifficulty: alarm.difficulty
         )
 
         do {
+//            Task {
+//                await endAllActivities()
+//            }
+            let activities = Activity<AlarmAttributesData>.activities
+                
+            print("🔍 Active Live Activities count:", activities.count)
+            
+            for activity in activities {
+                print("🆔 ID:", activity.id)
+                print("📊 State:", activity.content.state)
+                print("🕒 Push Token:", activity.pushToken ?? "nil")
+                print("------")
+            }
+            
             let content = ActivityContent(
                 state: state,
                 staleDate: nil
@@ -54,10 +80,11 @@ class AlarmLiveActivityManager {
         Task {
             guard let activity = activity else { return }
 
-            let finalState = AlarmAttributes.ContentState(
+            let finalState = AlarmAttributesData.ContentState(
                 isRinging: false,
                 label: "",
-                countdown: nil
+                countdown: nil,
+                challengeDifficulty: .medium
             )
             
             let finalContent = ActivityContent(

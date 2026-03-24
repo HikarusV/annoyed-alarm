@@ -6,12 +6,12 @@
 //
 
 
-import SwiftUI
+internal import SwiftUI
 import Foundation
 import Combine
 
 class AlarmListViewModel: ObservableObject {
-    @Published var alarms: [Alarm] = []
+    @Published var alarms: [AlarmData] = []
 
     func load() {
         // Fetch data dari Core Data
@@ -21,11 +21,11 @@ class AlarmListViewModel: ObservableObject {
             alarms = []
         } else {
             // Convert AlarmEntity ke Alarm struct
-            alarms = fetchedEntities.map { Alarm(entity: $0) }
+            alarms = fetchedEntities.map { AlarmData(entity: $0) }
         }
     }
 
-    func toggle(alarm: Alarm) {
+    func toggle(alarm: AlarmData) async {
         // Cari index alarm di array
         guard let index = alarms.firstIndex(where: { $0.id == alarm.id }) else { return }
 
@@ -37,20 +37,28 @@ class AlarmListViewModel: ObservableObject {
 
         // Schedule / cancel
         if alarms[index].isEnabled {
-            AlarmScheduler.shared.schedule(alarm: alarms[index])
+            do {
+                try await AlarmScheduler.shared.setAlarm(alarm: alarms[index])
+            } catch {
+                print(error.localizedDescription)
+            }
         } else {
-            AlarmScheduler.shared.cancel(alarm: alarms[index])
+            do {
+                try await AlarmScheduler.shared.cancelAlarm(alarm: alarms[index])
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
 }
 
 // MARK: - Extension untuk convert Core Data entity ke struct
-extension Alarm {
+extension AlarmData {
     init(entity: AlarmEntity) {
         self.id = entity.id ?? UUID()
         self.time = entity.time ?? Date()
         self.label = entity.label ?? ""
         self.isEnabled = entity.isEnabled
-        self.difficulty = entity.difficulty ?? "Easy"
+        self.difficulty = entity.difficulty?.toChallengeDifficulty() ?? .medium
     }
 }

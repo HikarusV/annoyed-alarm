@@ -5,7 +5,7 @@
 //  Created by Nazwa Sapta Pradana on 19/03/26.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 @main
 struct annoyed_alarmApp: App {
@@ -14,9 +14,9 @@ struct annoyed_alarmApp: App {
         let center = UNUserNotificationCenter.current()
         center.delegate = NotificationHandler.shared
         
-        AlarmScheduler.shared.requestPermission()
+        AlarmScheduler.shared.requestLocalNotificationPermission()
         
-        print("Hello Wordl!")
+//        print("Hello Wordl!")
     }
     
     var body: some Scene {

@@ -6,7 +6,7 @@
 //
 
 import UserNotifications
-import SwiftUI
+internal import SwiftUI
 import ActivityKit
 
 class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
@@ -29,12 +29,12 @@ class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
         let time = Date(timeIntervalSince1970: timeInterval)
         
         // Rekonstruksi alarm object
-        let alarm = Alarm(
+        let alarm = AlarmData(
             id: id,
             time: time,
             isEnabled: true,
             label: label,
-            difficulty: "medium"
+            difficulty: .medium
         )
         
         print("🔥 Notification received, starting Dynamic Island for:", alarm.label)

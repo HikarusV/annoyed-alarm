@@ -7,7 +7,7 @@
 
 
 internal import CoreData
-import SwiftUI
+internal import SwiftUI
 
 class DatabaseManager {
     static let shared = DatabaseManager()
@@ -28,19 +28,19 @@ class DatabaseManager {
     }
     
     // MARK: - Save
-    func save(alarm: Alarm) {
+    func save(alarm: AlarmData) {
         let newAlarm = AlarmEntity(context: context)
         newAlarm.id = alarm.id
         newAlarm.time = alarm.time
         newAlarm.label = alarm.label
         newAlarm.isEnabled = alarm.isEnabled
-        newAlarm.difficulty = alarm.difficulty
+        newAlarm.difficulty = alarm.difficulty.rawValue.capitalized
         
         saveContext()
     }
     
     // MARK: - Update
-    func update(alarm: Alarm) {
+    func update(alarm: AlarmData) {
         let request: NSFetchRequest<AlarmEntity> = AlarmEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", alarm.id as CVarArg)
         
@@ -49,7 +49,7 @@ class DatabaseManager {
                 existingAlarm.time = alarm.time
                 existingAlarm.label = alarm.label
                 existingAlarm.isEnabled = alarm.isEnabled
-                existingAlarm.difficulty = alarm.difficulty
+                existingAlarm.difficulty = alarm.difficulty.rawValue.capitalized
                 saveContext()
             }
         } catch {
@@ -58,7 +58,7 @@ class DatabaseManager {
     }
     
     // MARK: - Delete
-    func delete(alarm: Alarm) {
+    func delete(alarm: AlarmData) {
         let request: NSFetchRequest<AlarmEntity> = AlarmEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", alarm.id as CVarArg)
         

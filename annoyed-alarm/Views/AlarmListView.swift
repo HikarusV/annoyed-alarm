@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 
 struct AlarmListView: View {
     @StateObject var vm = AlarmListViewModel()
@@ -13,14 +13,6 @@ struct AlarmListView: View {
             VStack(spacing: 0) {
                 // MARK: - Custom Navigation Bar
                 HStack {
-//                    Button(action: {
-//                        presentationMode.wrappedValue.dismiss()
-//                    }) {
-//                        Image(systemName: "arrow.backward")
-//                            .foregroundColor(.textPrimary)
-//                            .font(.system(size: 18, weight: .medium))
-//                            .frame(width: 40, height: 40)
-//                    }
 
                     Text("Alarm")
                         .foregroundColor(.textPrimary)
@@ -60,48 +52,67 @@ struct AlarmListView: View {
                             .padding(.bottom, 20)
                     }
                     
-                    Button(action: {
-                            let id = UUID()
-
-                            let content = UNMutableNotificationContent()
-                            content.title = "Test Alarm"
-                            content.body = "Dynamic Island should appear, notif..."
-                            content.sound = .default
-                            
-                            // ✅ kirim data ke handler
-                            content.userInfo = [
-                                "alarmId": id.uuidString,
-                                "label": "Test DyIsland"
-                            ]
-
-                            let trigger = UNTimeIntervalNotificationTrigger(
-                                timeInterval: 5,
-                                repeats: false
-                            )
-
-                            let request = UNNotificationRequest(
-                                identifier: id.uuidString,
-                                content: content,
-                                trigger: trigger
-                            )
-
-                            UNUserNotificationCenter.current().add(request)
-                        
-//                            let alarm = Alarm(
-//                                id: UUID(),
-//                                time: Date(),
-//                                isEnabled: true,
-//                                label: "Test DyIsland",
-//                                difficulty: "medium"
+//                    Button(action: {
+//                            let id = UUID()
+//
+//                            let content = UNMutableNotificationContent()
+//                            content.title = "Test Alarm"
+//                            content.body = "Dynamic Island should appear, notif..."
+//                            content.sound = .default
+//                            
+//                            // ✅ kirim data ke handler
+//                            content.userInfo = [
+//                                "alarmId": id.uuidString,
+//                                "label": "Test DyIsland"
+//                            ]
+//
+//                            let trigger = UNTimeIntervalNotificationTrigger(
+//                                timeInterval: 5,
+//                                repeats: false
 //                            )
+//
+//                            let request = UNNotificationRequest(
+//                                identifier: id.uuidString,
+//                                content: content,
+//                                trigger: trigger
+//                            )
+//
+//                            UNUserNotificationCenter.current().add(request)
+                    Button(action: {
+                            let alarm = AlarmData(
+                                id: UUID(),
+                                time: Date(),
+                                isEnabled: true,
+                                label: "Test DyIsland",
+                                difficulty: ChallengeDifficulty.medium
+                            )
 //                            
 //                            // 🔹 Panggil Live Activity
 //                            Task {
-//                                AlarmLiveActivityManager.shared.start(alarm: alarm)
-//                                print("🔥 Dynamic Island started for:", alarm.label)
+                                AlarmLiveActivityManager.shared.start(alarm: alarm)
+                                print("🔥 Dynamic Island started for:", alarm.label)
 //                            }
                     }) {
                         Text("Test DyIsland")
+                            .foregroundColor(.textPrimary)
+                            .font(.system(size: 17, weight: .semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.surface500)
+                            .cornerRadius(24)
+                            .padding(.horizontal)
+                            .padding(.bottom, 20)
+
+                    }
+                    
+                    Button(action: {
+//
+//                            // 🔹 Panggil Live Activity
+                            Task {
+                                await AlarmLiveActivityManager.shared.endAllActivities()
+                            }
+                    }) {
+                        Text("X")
                             .foregroundColor(.textPrimary)
                             .font(.system(size: 17, weight: .semibold))
                             .frame(maxWidth: .infinity)
@@ -135,7 +146,7 @@ struct AlarmListView: View {
 
     // MARK: - Alarm Row
     @ViewBuilder
-    private func alarmRow(alarm: Alarm) -> some View {
+    private func alarmRow(alarm: AlarmData) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
                 Text(timeString(alarm.time))
@@ -155,8 +166,10 @@ struct AlarmListView: View {
             Toggle("", isOn: Binding(
                 get: { alarm.isEnabled },
                 set: { _ in
-                    vm.toggle(alarm: alarm)
-                    vm.load()
+                    Task {
+                        await vm.toggle(alarm: alarm)
+                        vm.load()
+                    }
                 }
             ))
             .tint(Color.success)
@@ -176,7 +189,7 @@ struct AlarmListView: View {
 
 enum ActiveSheet: Identifiable {
     case add
-    case edit(Alarm)
+    case edit(AlarmData)
 
     var id: String {
         switch self {

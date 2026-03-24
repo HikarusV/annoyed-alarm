@@ -1,15 +1,15 @@
-import SwiftUI
+internal import SwiftUI
 
 struct AlarmEditorView: View {
     @Environment(\.dismiss) var dismiss
     var onDone: (() -> Void)? = nil
     
-    let alarm: Alarm?
+    let alarm: AlarmData?
     
     @StateObject private var vm = AlarmEditorViewModel()
     @State private var showDifficultyPicker = false
     
-    init(alarm: Alarm? = nil, onDone: (() -> Void)? = nil) {
+    init(alarm: AlarmData? = nil, onDone: (() -> Void)? = nil) {
         self.alarm = alarm
         self.onDone = onDone               // <-- simpan callback
         _vm = StateObject(wrappedValue: AlarmEditorViewModel(alarm: alarm))

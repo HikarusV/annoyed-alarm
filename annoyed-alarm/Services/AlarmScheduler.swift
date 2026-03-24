@@ -7,17 +7,49 @@
 
 
 import UserNotifications
+import AlarmKit
+internal import SwiftUI
 
 class AlarmScheduler {
     static let shared = AlarmScheduler()
-
-    func requestPermission() {
+    
+    func requestLocalNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(
             options: [.alert, .sound]
         ) { _, _ in }
     }
-
-    func schedule(alarm: Alarm) {
+    
+    func setAlarm(alarm: AlarmData) async throws {
+        
+        let alert = AlarmPresentation.Alert(
+            title: "Title Alarm Kit Presentation",
+            stopButton: .init(text: "Start Challange", textColor: .red, systemImageName: "play.fill"),
+        )
+        
+//        let alert2 = AlarmPresentation.
+        
+        let presentation = AlarmPresentation(alert: alert)
+        
+        let attributes = AlarmAttributes<CountDownAttribute>(presentation: presentation, metadata: .init(), tintColor: .orange)
+        
+//        let scheduledAlarm = Alarm.Schedule.fixed(alarm.time)
+        let scheduledAlarm = Alarm.Schedule.fixed((.now.addingTimeInterval(10)))
+        
+        let config = AlarmManager.AlarmConfiguration(
+            schedule: scheduledAlarm,
+            attributes: attributes
+        )
+        
+        let _ = try await AlarmManager.shared.schedule(id: alarm.id, configuration: config)
+        print("Alarm Set \(alarm.time) Successfully!!")
+    }
+    
+    func cancelAlarm(alarm: AlarmData) async throws {
+        try AlarmManager.shared.cancel(id: alarm.id)
+        print("Alarm \(alarm.time) Cancelled Successfully!!")
+    }
+    
+    func scheduleLocalNotificationMethod(alarm: AlarmData) {
         guard alarm.isEnabled else { return }
 
         let content = UNMutableNotificationContent()
@@ -51,7 +83,7 @@ class AlarmScheduler {
         UNUserNotificationCenter.current().add(request)
     }
 
-    func cancel(alarm: Alarm) {
+    func cancelLocalNotificationMethod(alarm: AlarmData) {
         UNUserNotificationCenter.current()
             .removePendingNotificationRequests(
                 withIdentifiers: [alarm.id.uuidString]

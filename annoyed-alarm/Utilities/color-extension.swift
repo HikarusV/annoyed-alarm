@@ -5,7 +5,7 @@
 //  Created by Nazwa Sapta Pradana on 19/03/26.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 extension Color {
     init(hex: String) {

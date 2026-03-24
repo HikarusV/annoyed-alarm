@@ -11,17 +11,17 @@ import Combine
 class AlarmEditorViewModel: ObservableObject {
     @Published var time = Date()
     @Published var label = ""
-    @Published var difficulty = "Medium"
+    @Published var difficulty: String = "Medium"
     
-    private var existingAlarm: Alarm?
+    private var existingAlarm: AlarmData?
     
-    init(alarm: Alarm? = nil) {
+    init(alarm: AlarmData? = nil) {
         if let alarm = alarm {
             // EDIT MODE
             self.existingAlarm = alarm
             self.time = alarm.time
             self.label = alarm.label
-            self.difficulty = alarm.difficulty
+            self.difficulty = alarm.difficulty.rawValue.capitalized
         }
     }
     
@@ -31,16 +31,16 @@ class AlarmEditorViewModel: ObservableObject {
             // EDIT
             alarm.time = time
             alarm.label = label
-            alarm.difficulty = difficulty
+            alarm.difficulty = difficulty.toChallengeDifficulty() ?? ChallengeDifficulty.medium
             
             DatabaseManager.shared.update(alarm: alarm)
         } else {
             // CREATE
-            let newAlarm = Alarm(
+            let newAlarm = AlarmData(
                 time: time,
-                isEnabled: true,
+                isEnabled: false,
                 label: label.isEmpty ? "Alarm" : label,
-                difficulty: difficulty
+                difficulty: difficulty.toChallengeDifficulty() ?? ChallengeDifficulty.medium
             )
             
             DatabaseManager.shared.save(alarm: newAlarm)

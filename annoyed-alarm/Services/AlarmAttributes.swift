@@ -8,12 +8,13 @@
 
 import ActivityKit
 
-struct AlarmAttributes: ActivityAttributes {
+struct AlarmAttributesData: ActivityAttributes {
 
     public struct ContentState: Codable, Hashable {
         var isRinging: Bool
         var label: String
         var countdown: Int? = nil
+        var challengeDifficulty: ChallengeDifficulty
     }
 
     var alarmName: String

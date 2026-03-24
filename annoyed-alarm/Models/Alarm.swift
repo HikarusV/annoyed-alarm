@@ -8,10 +8,10 @@
 
 import Foundation
 
-struct Alarm: Identifiable, Codable {
+struct AlarmData: Identifiable, Codable {
     var id: UUID = UUID()
     var time: Date
     var isEnabled: Bool
     var label: String
-    var difficulty: String
+    var difficulty: ChallengeDifficulty
 }
