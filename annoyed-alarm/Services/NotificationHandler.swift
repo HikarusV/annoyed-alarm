@@ -6,7 +6,7 @@
 //
 
 import UserNotifications
-internal import SwiftUI
+import SwiftUI
 import ActivityKit
 
 class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {

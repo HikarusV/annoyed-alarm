@@ -7,11 +7,10 @@
 
 
 import ActivityKit
-internal import SwiftUI
+import SwiftUI
 
 class AlarmLiveActivityManager {
     static let shared = AlarmLiveActivityManager()
-    
     private var activity: Activity<AlarmAttributesData>?
     
     func endAllActivities() async {

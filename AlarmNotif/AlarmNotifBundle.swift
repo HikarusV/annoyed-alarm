@@ -6,7 +6,7 @@
 //
 
 import WidgetKit
-internal import SwiftUI
+import SwiftUI
 
 @main
 struct AlarmNotifBundle: WidgetBundle {

@@ -6,7 +6,7 @@
 //
 
 import AppIntents
-internal import SwiftUI
+import SwiftUI
 import WidgetKit
 
 struct AlarmNotifControl: ControlWidget {

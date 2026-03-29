@@ -7,7 +7,7 @@
 
 
 internal import CoreData
-internal import SwiftUI
+import SwiftUI
 
 class DatabaseManager {
     static let shared = DatabaseManager()

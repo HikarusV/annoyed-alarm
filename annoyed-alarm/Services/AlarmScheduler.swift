@@ -8,7 +8,7 @@
 
 import UserNotifications
 import AlarmKit
-internal import SwiftUI
+import SwiftUI
 
 class AlarmScheduler {
     static let shared = AlarmScheduler()

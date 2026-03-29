@@ -5,7 +5,7 @@
 //  Created by Nazwa Sapta Pradana on 19/03/26.
 //
 
-internal import SwiftUI
+import SwiftUI
 
 extension Font {
     

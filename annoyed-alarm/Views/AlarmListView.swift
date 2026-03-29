@@ -1,5 +1,4 @@
-internal import SwiftUI
-
+import SwiftUI
 struct AlarmListView: View {
     @StateObject var vm = AlarmListViewModel()
     @Environment(\.presentationMode) var presentationMode

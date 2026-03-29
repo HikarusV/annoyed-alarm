@@ -7,7 +7,7 @@
 
 import ActivityKit
 import WidgetKit
-internal import SwiftUI
+import SwiftUI
 import AppIntents
 
 struct AlarmNotifLiveActivity: Widget {

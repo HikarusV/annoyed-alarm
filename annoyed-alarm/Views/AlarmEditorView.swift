@@ -1,4 +1,4 @@
-internal import SwiftUI
+import SwiftUI
 
 struct AlarmEditorView: View {
     @Environment(\.dismiss) var dismiss

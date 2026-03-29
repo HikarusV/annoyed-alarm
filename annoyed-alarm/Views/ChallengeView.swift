@@ -5,7 +5,7 @@
 //  Created by Nazwa Sapta Pradana on 23/03/26.
 //
 
-internal import SwiftUI
+import SwiftUI
 internal import _LocationEssentials
 import Combine
 import simd

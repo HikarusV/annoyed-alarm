@@ -6,7 +6,7 @@
 //
 
 
-internal import SwiftUI
+import SwiftUI
 import CoreLocation
 import Combine
 import ARKit
@@ -55,8 +55,14 @@ class ChallengeViewModel: ObservableObject {
     }
     
     static func generateTargetPoint() -> SIMD3<Float> {
-        let x = Float.random(in: -2...2)
-        let z = Float.random(in: -2...2)
+        let x = Bool.random()
+            ? Float.random(in: -15 ... -5)
+            : Float.random(in: 5 ... 15)
+        
+        let z = Bool.random()
+            ? Float.random(in: -15 ... -5)
+            : Float.random(in: 5 ... 15)
+        
         targetPosition = SIMD3<Float>(x, 0, z)
         return targetPosition
     }
